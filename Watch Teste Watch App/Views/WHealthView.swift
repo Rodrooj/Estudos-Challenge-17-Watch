@@ -1,5 +1,5 @@
 //
-//  WWorkout.swift
+//  WHealthView.swift
 //  Watch Teste Watch App
 //
 //  Created by Rodrigo Barbosa Pereira on 17/08/26.
@@ -8,7 +8,7 @@
 import SwiftUI
 import HealthKit
 
-struct WWorkout: View {
+struct WHealthView: View {
     let healthStore = HKHealthStore()
     
     @State private var stepCount: Double = 0.0
@@ -76,5 +76,5 @@ struct WWorkout: View {
 }
 
 #Preview {
-    WWorkout()
+    WHealthView()
 }

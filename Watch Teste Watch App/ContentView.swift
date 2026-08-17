@@ -1,5 +1,5 @@
 //
-//  WTabView.swift
+//  ContentView.swift
 //  Watch Teste Watch App
 //
 //  Created by Rodrigo Barbosa Pereira on 17/08/26.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct WTabView: View {
+struct ContentView: View {
     var body: some View {
         TabView {
             VStack {
@@ -17,23 +17,15 @@ struct WTabView: View {
                 Text("Hello, world!")
             }
             .padding()
-            
-            VStack {
-                Image(systemName: "hand.wave")
-                    .imageScale(.large)
-                    .foregroundStyle(.blue)
-                Text("Bye, world!")
-            }
-            .padding()
-            
+                        
             WScrollView()
             
-            WWorkout()
+            WHealthView()
         }
         .tabViewStyle(.verticalPage)
     }
 }
 
 #Preview {
-    WTabView()
+    ContentView()
 }
