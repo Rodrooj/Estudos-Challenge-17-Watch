@@ -11,7 +11,7 @@ import SwiftUI
 struct Watch_Teste_Watch_AppApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            WTabView()
         }
     }
 }

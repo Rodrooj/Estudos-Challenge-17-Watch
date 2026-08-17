@@ -29,7 +29,7 @@ struct WWorkout: View {
             } else {
                 Text("Sem permissão")
                     .foregroundColor(.gray)
-            }
+            }            
         }
         .onAppear {
             requestAuthorization()

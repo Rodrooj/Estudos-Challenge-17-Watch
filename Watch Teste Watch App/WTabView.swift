@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct ContentView: View {
+struct WTabView: View {
     var body: some View {
         TabView {
             VStack {
@@ -19,17 +19,21 @@ struct ContentView: View {
             .padding()
             
             VStack {
-                Image(systemName: "globe")
+                Image(systemName: "hand.wave")
                     .imageScale(.large)
                     .foregroundStyle(.blue)
                 Text("Bye, world!")
             }
             .padding()
+            
+            WScrollView()
+            
+            WWorkout()
         }
         .tabViewStyle(.verticalPage)
     }
 }
 
 #Preview {
-    ContentView()
+    WTabView()
 }
