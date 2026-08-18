@@ -304,6 +304,7 @@
 				DEVELOPMENT_TEAM = ZNR8M4DYPL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Watch-Teste-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Watch Teste";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Precisamos ler seus passos para exibir na tela inicial";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Precisamos ler seus passos para exibir na tela inicial";
@@ -326,7 +327,7 @@
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 26.6;
+				WATCHOS_DEPLOYMENT_TARGET = 11.6;
 			};
 			name = Debug;
 		};
@@ -341,6 +342,7 @@
 				DEVELOPMENT_TEAM = ZNR8M4DYPL;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Watch-Teste-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = "Watch Teste";
 				INFOPLIST_KEY_NSHealthClinicalHealthRecordsShareUsageDescription = "Precisamos ler seus passos para exibir na tela inicial";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "Precisamos ler seus passos para exibir na tela inicial";
@@ -364,7 +366,7 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
-				WATCHOS_DEPLOYMENT_TARGET = 26.6;
+				WATCHOS_DEPLOYMENT_TARGET = 11.6;
 			};
 			name = Release;
 		};
@@ -375,7 +377,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZNR8M4DYPL;
 				INFOPLIST_KEY_CFBundleDisplayName = "Watch Teste";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.br.rodrigo.Watch-Teste";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -393,7 +395,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = ZNR8M4DYPL;
 				INFOPLIST_KEY_CFBundleDisplayName = "Watch Teste";
-				IPHONEOS_DEPLOYMENT_TARGET = 26.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = "com.br.rodrigo.Watch-Teste";
 				PRODUCT_NAME = "$(TARGET_NAME)";

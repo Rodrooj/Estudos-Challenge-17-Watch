@@ -21,6 +21,8 @@ struct ContentView: View {
             WScrollView()
             
             WHealthView()
+            
+            WWorkout()
         }
         .tabViewStyle(.verticalPage)
     }

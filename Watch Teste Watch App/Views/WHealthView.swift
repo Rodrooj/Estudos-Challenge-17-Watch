@@ -9,8 +9,10 @@ import SwiftUI
 import HealthKit
 
 struct WHealthView: View {
+    // Instância principal para acessar o banco de dados do HealthKit
     let healthStore = HKHealthStore()
     
+    // variáveis para atualizar a UI
     @State private var stepCount: Double = 0.0
     @State private var isAuthorized = false
     
@@ -37,8 +39,10 @@ struct WHealthView: View {
     }
     
     func requestAuthorization() {
+        // Verifica se o HealthKit está disponível no dispositivo
         guard HKHealthStore.isHealthDataAvailable() else { return }
         
+        // Define o tipo de dado lido
         guard let stepType = HKObjectType.quantityType(forIdentifier: .stepCount) else { return }
         let readTypes: Set = [stepType]
         
@@ -67,6 +71,7 @@ struct WHealthView: View {
             
             let steps = sum.doubleValue(for: HKUnit.count())
             
+            // Atualiza a interface na thread principal
             DispatchQueue.main.async {
                 self.stepCount = steps
             }
