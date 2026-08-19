@@ -78,7 +78,6 @@ class WorkoutManager: NSObject, ObservableObject {
     
     func endWorkout() {
         session?.end()
-        let endDate = Date()
 
         builder?.finishWorkout() { [weak self] sucess, error in
             guard let self = self else { return }
