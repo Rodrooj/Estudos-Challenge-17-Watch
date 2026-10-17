@@ -21,24 +21,31 @@ class WorkoutManager: NSObject, ObservableObject {
     @Published var activeEnergy: Double = 0.0
     @Published var startDate: Date? = nil
     @Published var workoutState: HKWorkoutSessionState = .notStarted
+    @Published var errorMessage: String?
 
     func requestAuthorization() async {
         guard HKHealthStore.isHealthDataAvailable() else { return }
         
+        guard
+            let heartRateType = HKObjectType.quantityType(forIdentifier: .heartRate),
+            let activeEnergyType = HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)
+        else {
+            errorMessage = "Os tipos de dados necessários não estão disponíveis neste dispositivo."
+            return
+        }
+
         let typesToShare: Set<HKSampleType> = [HKObjectType.workoutType()]
-        let typesToRead: Set<HKObjectType> = [
-            HKObjectType.quantityType(forIdentifier: .heartRate)!,
-            HKObjectType.quantityType(forIdentifier: .activeEnergyBurned)!
-        ]
+        let typesToRead: Set<HKObjectType> = [heartRateType, activeEnergyType]
         
         do {
             try await healthStore.requestAuthorization(toShare: typesToShare, read: typesToRead)
         } catch {
-            print("Erro na permissão do HealthKit: \(error.localizedDescription)")
+            errorMessage = "Erro na permissão do HealthKit: \(error.localizedDescription)"
         }
     }
     
     func startWorkout() {
+        errorMessage = nil
         let configuration = HKWorkoutConfiguration()
         configuration.activityType = .other
         configuration.locationType = .indoor
@@ -47,7 +54,7 @@ class WorkoutManager: NSObject, ObservableObject {
             session = try HKWorkoutSession(healthStore: healthStore, configuration: configuration)
             builder = session?.associatedWorkoutBuilder()
         } catch {
-            print("Erro ao criar sessão: \(error.localizedDescription)")
+            errorMessage = "Erro ao criar sessão: \(error.localizedDescription)"
             return
         }
         
@@ -58,9 +65,15 @@ class WorkoutManager: NSObject, ObservableObject {
         
         let now = Date()
         session?.startActivity(with: now)
-        builder?.beginCollection(withStart: now) { [weak self] sucess, error in
-            guard let self = self, sucess else { return }
+        builder?.beginCollection(withStart: now) { [weak self] success, error in
+            guard let self = self else { return }
             DispatchQueue.main.async {
+                guard success else {
+                    self.errorMessage = error?.localizedDescription
+                        ?? "Não foi possível iniciar a coleta do treino."
+                    return
+                }
+                self.errorMessage = nil
                 self.isPresenting = true
                 self.startDate = now
             }
@@ -77,16 +90,39 @@ class WorkoutManager: NSObject, ObservableObject {
 //    }
     
     func endWorkout() {
-        session?.end()
+        guard let session = session, let builder = builder else {
+            errorMessage = "Não há um treino ativo para finalizar."
+            return
+        }
 
-        builder?.finishWorkout() { [weak self] sucess, error in
+        session.end()
+        let endDate = Date()
+        builder.endCollection(withEnd: endDate) { [weak self] success, error in
             guard let self = self else { return }
+            guard success else {
+                DispatchQueue.main.async {
+                    self.errorMessage = error?.localizedDescription
+                        ?? "Não foi possível encerrar a coleta do treino."
+                    self.isPresenting = false
+                    self.startDate = nil
+                }
+                return
+            }
 
-            DispatchQueue.main.async {
-                self.isPresenting = false
-                self.startDate = nil
-                self.heartRate = 0
-                self.activeEnergy = 0
+            builder.finishWorkout { [weak self] workout, finishError in
+                guard let self = self else { return }
+                DispatchQueue.main.async {
+                    self.isPresenting = false
+                    self.startDate = nil
+                    self.heartRate = 0
+                    self.activeEnergy = 0
+                    if workout == nil {
+                        self.errorMessage = finishError?.localizedDescription
+                            ?? "O HealthKit não conseguiu salvar o treino."
+                    } else {
+                        self.errorMessage = nil
+                    }
+                }
             }
         }
     }
@@ -143,6 +179,13 @@ struct WWorkout: View {
     
     var body: some View {
         VStack(spacing: 4) {
+            if let errorMessage = workoutManager.errorMessage {
+                Text(errorMessage)
+                    .font(.caption2)
+                    .foregroundStyle(.red)
+                    .multilineTextAlignment(.center)
+            }
+
             if let startDate = workoutManager.startDate {
                 Text(startDate, style: .timer)
                     .font(.system(size: 36, weight: .bold, design: .rounded))
