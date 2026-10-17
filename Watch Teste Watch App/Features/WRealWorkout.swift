@@ -27,13 +27,17 @@ struct PitchWorkoutBuilder {
             goal: .time(pitchMinutes, .minutes)
         )
         
-        // 3. Montagem do CustomWorkout
-        // Usamos .mindAndBody (ou .other) como o tipo de atividade no HealthKit
+        // 3. Inclui a etapa principal em um bloco executado uma vez.
+        let pitchInterval = IntervalStep(.work, step: pitchStep)
+        let pitchBlock = IntervalBlock(steps: [pitchInterval], iterations: 1)
+
+        // 4. Monta o treino com aquecimento e etapa principal.
         let customWorkout = CustomWorkout(
             activity: .mindAndBody,
             location: .indoor,
             displayName: "Treino de Pitch Deck",
             warmup: warmupStep,
+            blocks: [pitchBlock],
             cooldown: nil // Sem desaquecimento
         )
         
