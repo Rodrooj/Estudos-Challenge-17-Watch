@@ -15,6 +15,7 @@ struct WHealthView: View {
     // variáveis para atualizar a UI
     @State private var stepCount: Double = 0.0
     @State private var isAuthorized = false
+    @State private var authorizationError: String?
     
     var body: some View {
         VStack {
@@ -28,8 +29,14 @@ struct WHealthView: View {
             if isAuthorized {
                 Text("\(Int(stepCount))")
                     .font(.system(size: 40, weight: .bold, design: .rounded))
+            } else if let authorizationError {
+                Text("Não foi possível carregar os dados de saúde")
+                    .foregroundColor(.gray)
+                Text(authorizationError)
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
             } else {
-                Text("Sem permissão")
+                Text("Aguardando acesso aos dados")
                     .foregroundColor(.gray)
             }            
         }
@@ -46,13 +53,22 @@ struct WHealthView: View {
         guard let stepType = HKObjectType.quantityType(forIdentifier: .stepCount) else { return }
         let readTypes: Set = [stepType]
         
-        healthStore.requestAuthorization(toShare: nil, read: readTypes) { sucess, error in
-            if sucess {
+        healthStore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
+            guard success else {
                 DispatchQueue.main.async {
-                    self.isAuthorized = true
+                    self.authorizationError = error?.localizedDescription
+                        ?? "A solicitação de autorização ao HealthKit falhou."
                 }
-                fetchSteps()
+                return
             }
+
+            DispatchQueue.main.async {
+                self.authorizationError = nil
+                // O retorno positivo conclui a solicitação, mas não revela se a leitura
+                // foi autorizada pelo usuário; o HealthKit preserva essa informação.
+                self.isAuthorized = true
+            }
+            fetchSteps()
         }
     }
     
@@ -65,7 +81,11 @@ struct WHealthView: View {
         
         let query = HKStatisticsQuery(quantityType: stepType, quantitySamplePredicate: predicate, options: .cumulativeSum) { _, result, error in
             guard let result = result, let sum = result.sumQuantity() else {
-                print("Falha ao buscar passos: \(error?.localizedDescription ?? "Erro desconhecido")")
+                let message = error?.localizedDescription ?? "O HealthKit não retornou dados de passos."
+                print("Falha ao buscar passos: \(message)")
+                DispatchQueue.main.async {
+                    self.authorizationError = message
+                }
                 return
             }
             
